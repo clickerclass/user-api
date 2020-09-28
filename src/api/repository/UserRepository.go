@@ -13,32 +13,28 @@ import (
 var collection *mongo.Collection
 var ctx = context.TODO()
 
-func UserFindByEmail(email string) model.User {
-	cursor := collection.FindOne(ctx, bson.M{"email": email})
+func UserFindByFilters(filters bson.M) (model.User, model.HttpResponse) {
+	cursor := collection.FindOne(ctx, filters)
 	var user model.User
+	var httpResponse model.HttpResponse
 	error := cursor.Decode(&user)
 	if error != nil {
-		panic(error)
+		httpResponse.MessageError = error.Error()
+		httpResponse.StatusHttp = 404
+		httpResponse.Error = true
 	}
-	return user
+	return user, httpResponse
 }
-func UserCreate(user *model.User) interface{} {
-	insertResult, error := collection.InsertOne(ctx, user)
+func UserCreate(user *model.User) model.HttpResponse {
+	_, error := collection.InsertOne(ctx, user)
+	var httpResponse model.HttpResponse
 	if error != nil {
-		panic(error)
+		httpResponse.MessageError = error.Error()
+		httpResponse.StatusHttp = 409
+		httpResponse.Error = true
 	}
-	return insertResult.InsertedID
+	return httpResponse
 }
-func UserFindByDocTypeAndDoc(docType string, doc string) model.User {
-	cursor := collection.FindOne(ctx, bson.M{"documentType": docType, "document": doc})
-	var user model.User
-	error := cursor.Decode(&user)
-	if error != nil {
-		panic(error)
-	}
-	return user
-}
-
 func Connect() {
 	clientOptions := options.Client().ApplyURI("mongodb://192.168.0.188:27017")
 	client, err := mongo.NewClient(clientOptions)

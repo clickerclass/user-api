@@ -14,3 +14,9 @@ type User struct {
 	UserName     string             `json:"userName,readonly,omitempty"`
 	UserType     string             `json:"userType,readonly,omitempty"`
 }
+
+type HttpResponse struct {
+	StatusHttp   int    `json:"statusHttp,omitempty"`
+	MessageError string `json:"messageError,omitempty"`
+	Error        bool   `json:"error,readonly,omitempty"`
+}

@@ -13,6 +13,7 @@ func UserRouter() {
 	router.HandleFunc("/api/user/{email}", handler.UserFindByIdHandler).Methods("GET")
 	router.HandleFunc("/api/user", handler.UserCreateHandler).Methods("POST")
 	router.HandleFunc("/api/user/{docType}/{doc}", handler.UserFindByDocTypeAndDocHandler).Methods("GET")
+	router.HandleFunc("/api/authentication/{email}", handler.UserFindByDocTypeAndDocHandler).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8080", router))
 
 }
